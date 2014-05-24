@@ -1,4 +1,4 @@
-# Mathias’s dotfiles
+# Shraymonks’s dotfiles
 
 ## Installation
 
