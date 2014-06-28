@@ -2,42 +2,43 @@ set nocompatible " be iMproved
 
 " Vundle
 filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/Vundle.vim'
 
 " Vundle bundles
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'jelera/vim-javascript-syntax'
-Bundle 'pangloss/vim-javascript'
-Bundle 'scrooloose/syntastic'
-Bundle 'scrooloose/nerdtree'
-Bundle 'bling/vim-airline'
-Bundle 'bling/vim-bufferline'
-Bundle 'tpope/vim-fugitive'
-Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-Bundle 'tpope/vim-rails.git'
-Bundle 'L9'
-Bundle 'kien/ctrlp.vim'
-Bundle 'mhinz/vim-signify'
-Bundle 'octol/vim-cpp-enhanced-highlight'
-Bundle 'tpope/vim-surround'
-Bundle 'mhinz/vim-startify'
-Bundle 'terryma/vim-multiple-cursors'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'othree/html5.vim'
-Bundle 'hail2u/vim-css3-syntax'
-Bundle 'groenewege/vim-less'
-Bundle 'plasticboy/vim-markdown'
-Bundle 'LaTeX-Box-Team/LaTeX-Box'
-Bundle 'Valloric/YouCompleteMe'
-Bundle 'Raimondi/delimitMate'
-Bundle 'elzr/vim-json'
-Bundle 'rking/ag.vim'
-Bundle 'justinmk/vim-sneak'
-Bundle 'brookhong/DBGPavim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'jelera/vim-javascript-syntax'
+Plugin 'pangloss/vim-javascript'
+Plugin 'scrooloose/syntastic'
+Plugin 'scrooloose/nerdtree'
+Plugin 'bling/vim-airline'
+Plugin 'bling/vim-bufferline'
+Plugin 'tpope/vim-fugitive'
+Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+Plugin 'tpope/vim-rails.git'
+Plugin 'L9'
+Plugin 'kien/ctrlp.vim'
+Plugin 'mhinz/vim-signify'
+Plugin 'octol/vim-cpp-enhanced-highlight'
+Plugin 'tpope/vim-surround'
+Plugin 'mhinz/vim-startify'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'kchmck/vim-coffee-script'
+Plugin 'othree/html5.vim'
+Plugin 'hail2u/vim-css3-syntax'
+Plugin 'groenewege/vim-less'
+Plugin 'plasticboy/vim-markdown'
+Plugin 'LaTeX-Box-Team/LaTeX-Box'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'Raimondi/delimitMate'
+Plugin 'elzr/vim-json'
+Plugin 'rking/ag.vim'
+Plugin 'justinmk/vim-sneak'
+Plugin 'brookhong/DBGPavim'
 
+call vundle#end()
 filetype plugin indent on
 
 " Settings
