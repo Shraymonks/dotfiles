@@ -9,7 +9,6 @@ return {
           'eslint',
           'pyright',
           'lua_ls',
-          'tsserver',
         },
       }
       local lsp = require 'lspconfig'
@@ -92,20 +91,6 @@ return {
                 },
                 format = {
                   enable = false,
-                },
-              },
-            },
-          })
-        end,
-        ['tsserver'] = function()
-          require('typescript-tools').setup(coq.lsp_ensure_capabilities {
-            server = {
-              on_attach = on_attach,
-              settings = {
-                typescript = {
-                  format = {
-                    enable = false,
-                  },
                 },
               },
             },
