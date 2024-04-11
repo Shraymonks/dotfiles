@@ -12,7 +12,10 @@ return {
         '<cmd>NvimTreeToggle<cr>',
         { silent = true, noremap = true }
       )
-      require('nvim-tree').setup()
+      require('nvim-tree').setup {
+        disable_netrw = false,
+        hijack_netrw = true,
+      }
     end,
   },
 }
