@@ -9,7 +9,7 @@ return {
       vim.keymap.set(
         'n',
         '<C-n>',
-        '<cmd>NvimTreeToggle<cr>',
+        '<cmd>NvimTreeFindFileToggle<cr>',
         { silent = true, noremap = true }
       )
       require('nvim-tree').setup {
