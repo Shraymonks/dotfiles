@@ -1,0 +1,59 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+eval `gdircolors ~/.dircolors`
+
+alias ls='ls -G'
+
+zstyle ':autocomplete:*' min-input 3
+zstyle ':autocomplete:tab:*' widget-style menu-select
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+export FZF_DEFAULT_COMMAND='rg --files --hidden -g "!.git/"'
+eval "$(fzf --zsh)"
+
+export BAT_THEME="TwoDark"
+
+{{- if eq .chezmoi.hostname "rBook-Pro" }}
+. "$HOME/.asdf/asdf.sh"
+# append completions to fpath
+fpath=(${ASDF_DIR}/completions $fpath)
+
+# pnpm
+export PNPM_HOME="/Users/shraymonks/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+# pnpm endexport GPG_TTY=$(tty)
+#
+{{- end}}
+
+{{- if eq .chezmoi.hostname "raymonds-Apple-MacBook-Pro" }}
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+export PATH="/Users/raymond/.local/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+
+export DEVELOPER_NAME=Shraymonks
+export PANTS_LINT=true
+export REMOTE_PRIVATE_KEY_FILE="/Users/raymond/.ssh/id_ed25519"
+{{- end}}
+
+# initialise completions with ZSH's compinit
+autoload -Uz compinit && compinit
+
+eval "$(direnv hook zsh)"
