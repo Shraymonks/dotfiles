@@ -37,27 +37,27 @@ return {
       },
       {
         'gD',
-        '<cmd>Trouble lsp_declarations toggle focus=true<cr>',
+        '<cmd>Trouble lsp_declarations toggle focus=true auto_refresh=false<cr>',
         desc = 'LSP Declarations',
       },
       {
         'gd',
-        '<cmd>Trouble lsp_definitions toggle focus=true<cr>',
+        '<cmd>Trouble lsp_definitions toggle focus=true auto_refresh=false<cr>',
         desc = 'LSP Definitions',
       },
       {
         'gi',
-        '<cmd>Trouble lsp_implementations toggle focus=true<cr>',
+        '<cmd>Trouble lsp_implementations toggle focus=true auto_refresh=false<cr>',
         desc = 'LSP Implementations',
       },
       {
         'gr',
-        '<cmd>Trouble lsp_references toggle focus=true<cr>',
+        '<cmd>Trouble lsp_references toggle focus=true auto_refresh=false<cr>',
         desc = 'LSP References',
       },
       {
         'gt',
-        '<cmd>Trouble lsp_type_definitions toggle focus=true<cr>',
+        '<cmd>Trouble lsp_type_definitions toggle focus=true auto_refresh=false<cr>',
         desc = 'LSP Type Definitions',
       },
     },
