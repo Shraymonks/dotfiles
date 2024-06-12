@@ -3,7 +3,7 @@
   refreshPeriod = "168h"
   stripComponents = 1
   type = "archive"
-  url = "https://github.com/marlonrichert/zsh-autocomplete/archive/master.tar.gz"
+  url = "https://github.com/marlonrichert/zsh-autocomplete/archive/008caaea55780dd2b55f119d6880c5b89e5e4bb2.tar.gz"
 
 [".zsh/zsh-syntax-highlighting"]
   exact = true
