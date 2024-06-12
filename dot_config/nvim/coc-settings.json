@@ -1,0 +1,5 @@
+{
+  "coc.preferences.formatOnSave": true,
+  "diagnostic.virtualText": true,
+  "diagnostic.virtualTextCurrentLineOnly": false
+}
