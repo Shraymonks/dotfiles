@@ -9,5 +9,8 @@ local config = wezterm.config_builder()
 -- For example, changing the color scheme:
 config.color_scheme = 'onedarkpro_onedark'
 
+-- Disable ligatures
+config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
+
 -- and finally, return the configuration to wezterm
 return config
