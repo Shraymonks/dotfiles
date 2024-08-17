@@ -26,10 +26,6 @@ eval "$(fzf --zsh)"
 export BAT_THEME="TwoDark"
 
 {{- if eq .chezmoi.hostname "rBook-Pro" }}
-. "$HOME/.asdf/asdf.sh"
-# append completions to fpath
-fpath=(${ASDF_DIR}/completions $fpath)
-
 # pnpm
 export PNPM_HOME="/Users/shraymonks/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
