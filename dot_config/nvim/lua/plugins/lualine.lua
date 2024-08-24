@@ -5,7 +5,7 @@ return {
     config = function()
       local onedarkpro = require 'lualine.themes.onedark'
       require('lualine').setup {
-        extensions = { 'fugitive', 'nvim-tree' },
+        extensions = { 'fugitive', 'fzf', 'lazy', 'nvim-tree' },
         options = {
           globalstatus = true,
           theme = onedarkpro,
@@ -16,7 +16,7 @@ return {
             'diff',
             {
               'diagnostics',
-              sources = { 'ale', 'coc', 'nvim_diagnostic' },
+              sources = { 'coc', 'nvim_diagnostic' },
             },
           },
         },
