@@ -1,0 +1,6 @@
+cursor-style = block
+font-feature = -calt
+font-feature = -dlig
+font-feature = -liga
+shell-integration-features = no-cursor
+theme = onedarkpro_onedark
