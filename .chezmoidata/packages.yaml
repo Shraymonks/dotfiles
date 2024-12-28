@@ -1,0 +1,13 @@
+packages:
+  darwin:
+    brews:
+      - bat
+      - direnv
+      - fzf
+      - git
+      - git-delta
+      - neovim
+      - starship
+    casks:
+      - ghostty
+      - linearmouse
