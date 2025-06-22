@@ -1,8 +1,0 @@
-{
-  "coc.preferences.formatOnSave": true,
-  "diagnostic.virtualText": true,
-  "diagnostic.virtualTextCurrentLineOnly": false,
-  "eslint.experimental.useFlatConfig": true,
-  "eslint.packageManager": "pnpm",
-  "tsserver.maxTsServerMemory": 10000
-}
