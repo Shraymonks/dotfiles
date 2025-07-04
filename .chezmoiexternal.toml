@@ -1,13 +1,13 @@
 [".zsh/zsh-autocomplete"]
-  exact = true
-  refreshPeriod = "168h"
-  stripComponents = 1
-  type = "archive"
-  url = "https://github.com/marlonrichert/zsh-autocomplete/archive/008caaea55780dd2b55f119d6880c5b89e5e4bb2.tar.gz"
+exact = true
+refreshPeriod = "168h"
+stripComponents = 1
+type = "archive"
+url = "https://github.com/marlonrichert/zsh-autocomplete/archive/master.tar.gz"
 
 [".zsh/zsh-syntax-highlighting"]
-  exact = true
-  refreshPeriod = "168h"
-  stripComponents = 1
-  type = "archive"
-  url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+exact = true
+refreshPeriod = "168h"
+stripComponents = 1
+type = "archive"
+url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"

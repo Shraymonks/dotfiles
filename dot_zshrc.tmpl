@@ -41,6 +41,7 @@ export REMOTE_PRIVATE_KEY_FILE="/Users/raymond/.ssh/id_ed25519"
 # initialise completions with ZSH's compinit
 autoload -Uz compinit && compinit
 
-(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv hook zsh)"
+export VISUAL='nvim'
+export EDITOR="$VISUAL"
 
 eval "$(starship init zsh)"
