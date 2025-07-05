@@ -2,7 +2,6 @@ packages:
   darwin:
     brews:
       - bat
-      - direnv
       - fzf
       - git
       - git-delta
