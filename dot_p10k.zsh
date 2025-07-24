@@ -33,6 +33,7 @@
     # os_icon               # os identifier
     dir                     # current directory
     vcs                     # git status
+    jj
     prompt_char             # prompt symbol
   )
 
@@ -357,8 +358,13 @@
   # VCS_STATUS_* parameters are set by gitstatus plugin. See reference:
   # https://github.com/romkatv/gitstatus/blob/master/gitstatus.plugin.zsh.
   function my_git_formatter() {
-    emulate -L zsh
+    emulate -L zsh -o extended_glob
+    if [[ -n ./(../)#(.jj)(#qN/) ]]; then
+      typeset -g my_git_format=""
+      return
+    fi
 
+    return
     if [[ -n $P9K_CONTENT ]]; then
       # If P9K_CONTENT is not empty, use it. It's either "loading" or from vcs_info (not from
       # gitstatus plugin). VCS_STATUS_* parameters are not available in this case.
@@ -1669,6 +1675,9 @@
     # and regular prompts.
     prompt_example
   }
+
+  # Transient prompt works similarly to the builtin transient_rprompt option. It trims down prompt
+  # when accepting a command line. Supported values:
 
   # User-defined prompt segments can be customized the same way as built-in segments.
   # typeset -g POWERLEVEL9K_EXAMPLE_FOREGROUND=208
