@@ -2,11 +2,11 @@ packages:
   darwin:
     brews:
       - bat
+      - difftastic
       - fzf
       - git
-      - git-delta
+      - jj
       - neovim
-      - starship
     casks:
       - ghostty
       - linearmouse

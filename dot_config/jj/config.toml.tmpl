@@ -8,3 +8,6 @@ email = {{ .email | quote }}
 behavior = "own"
 backend = "gpg"
 key = {{ .signingkey | quote }}
+
+[ui]
+diff-formatter = ["difft", "--color=always", "$left", "$right"]
