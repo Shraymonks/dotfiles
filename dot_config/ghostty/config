@@ -1,4 +1,5 @@
 cursor-style = block
+custom-shader = ./shaders/cursor_blaze.glsl
 font-feature = -calt
 font-feature = -dlig
 font-feature = -liga
