@@ -1,12 +1,15 @@
 packages:
   darwin:
     brews:
+      - antidote
       - bat
       - difftastic
       - fzf
       - git
       - jj
+      - dmmulroy/tap/jj-starship
       - neovim
+      - starship
     casks:
       - ghostty
       - linearmouse

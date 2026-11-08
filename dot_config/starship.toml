@@ -1,0 +1,68 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+# Match Powerlevel10k 1-line lean compact style
+add_newline = false
+
+format = """
+$directory\
+${custom.jj}\
+$character"""
+
+right_format = """
+$status\
+$cmd_duration\
+$jobs\
+$direnv\
+$python\
+$nodejs\
+$rust\
+$golang\
+$ruby\
+$java\
+$lua\
+$kubernetes\
+$terraform\
+$aws\
+$gcloud\
+$azure\
+$nix_shell\
+$username\
+$hostname"""
+
+[directory]
+style = "bold blue"
+truncation_length = 4
+truncate_to_repo = false
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold green)"
+
+[status]
+disabled = false
+format = "[$symbol$status]($style) "
+symbol = "✘ "
+style = "bold red"
+
+[cmd_duration]
+min_time = 3_000
+format = "[$duration]($style) "
+style = "yellow"
+
+[jobs]
+format = "[$symbol$number]($style) "
+symbol = "⚙ "
+style = "green"
+
+# Disabled in favor of jj-starship (which handles both jj and git repos)
+[git_branch]
+disabled = true
+
+[git_status]
+disabled = true
+
+[custom.jj]
+when = "jj-starship detect"
+shell = ["jj-starship"]
+format = "$output "

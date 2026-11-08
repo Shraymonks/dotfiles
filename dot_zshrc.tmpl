@@ -1,101 +1,167 @@
-# Personal Zsh configuration file. It is strongly recommended to keep all
-# shell customization and configuration (including exported environment
-# variables such as PATH) in this file or in files sourced from it.
-#
-# Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md.
+# Personal Zsh configuration file.
 
-# Periodic auto-update on Zsh startup: 'ask' or 'no'.
-# You can manually run `z4h update` to update everything.
-zstyle ':z4h:' auto-update      'no'
-# Ask whether to auto-update this often; has no effect if auto-update is 'no'.
-zstyle ':z4h:' auto-update-days '28'
-
-# Keyboard type: 'mac' or 'pc'.
-zstyle ':z4h:bindkey' keyboard  'mac'
-
-# Don't start tmux.
-zstyle ':z4h:' start-tmux       no
-
-# Mark up shell's output with semantic information.
-zstyle ':z4h:' term-shell-integration 'yes'
-
-# Right-arrow key accepts one character ('partial-accept') from
-# command autosuggestions or the whole thing ('accept')?
-zstyle ':z4h:autosuggestions' forward-char 'accept'
-
-# Recursively traverse directories when TAB-completing files.
-zstyle ':z4h:fzf-complete' recurse-dirs 'no'
-
-# Enable direnv to automatically source .envrc files.
-zstyle ':z4h:direnv'         enable 'no'
-# Show "loading" and "unloading" notifications from direnv.
-zstyle ':z4h:direnv:success' notify 'yes'
-
-# Enable ('yes') or disable ('no') automatic teleportation of z4h over
-# SSH when connecting to these hosts.
-zstyle ':z4h:ssh:example-hostname1'   enable 'yes'
-zstyle ':z4h:ssh:*.example-hostname2' enable 'no'
-# The default value if none of the overrides above match the hostname.
-zstyle ':z4h:ssh:*'                   enable 'no'
-
-# Send these files over to the remote host when connecting over SSH to the
-# enabled hosts.
-zstyle ':z4h:ssh:*' send-extra-files '~/.nanorc' '~/.env.zsh'
-
-z4h install mafredri/zsh-async
-
-# Install or update core components (fzf, zsh-autosuggestions, etc.) and
-# initialize Zsh. After this point console I/O is unavailable until Zsh
-# is fully initialized. Everything that requires user interaction or can
-# perform network I/O must be done above. Everything else is best done below.
-z4h init || return
+# Ensure Homebrew is in PATH on Apple Silicon / macOS.
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 # Extend PATH.
-path=(~/bin $path)
+path=(~/bin ~/.local/bin $path)
+typeset -U path
 
 # Export environment variables.
 export GPG_TTY=$TTY
 export VISUAL='nvim'
 export EDITOR="$VISUAL"
+export CLICOLOR=1
 
-{{- if eq .chezmoi.hostname "rBook-Pro" }}
-eval "$(~/.local/bin/mise activate zsh)"
+# Activate mise if installed.
+if (( $+commands[mise] )); then
+  eval "$(mise activate zsh)"
+elif [[ -x "$HOME/.local/bin/mise" ]]; then
+  eval "$("$HOME/.local/bin/mise" activate zsh)"
+fi
+
 # pnpm
-export PNPM_HOME="/Users/shraymonks/Library/pnpm"
-export PATH="$PNPM_HOME:$PATH"
-# pnpm endexport GPG_TTY=$(tty)
-#
-{{- end}}
+if [[ -d "$HOME/Library/pnpm" ]]; then
+  export PNPM_HOME="$HOME/Library/pnpm"
+  path=("$PNPM_HOME" $path)
+fi
+
+# nvm
+if [[ -d "$HOME/.nvm" ]]; then
+  export NVM_DIR="$HOME/.nvm"
+  [[ -s "$NVM_DIR/nvm.sh" ]] && \. "$NVM_DIR/nvm.sh"
+  [[ -s "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion"
+fi
+
+# pyenv
+if [[ -d "$HOME/.pyenv" ]]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  path=("$PYENV_ROOT/bin" $path)
+  if (( $+commands[pyenv] )); then
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"
+  fi
+fi
 
 {{- if eq .chezmoi.hostname "raymonds-Apple-MacBook-Pro" }}
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-export PATH="/Users/raymond/.local/bin:$PATH"
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
-
 export DEVELOPER_NAME=Shraymonks
 export PANTS_LINT=true
-export REMOTE_PRIVATE_KEY_FILE="/Users/raymond/.ssh/id_ed25519"
+export REMOTE_PRIVATE_KEY_FILE="$HOME/.ssh/id_ed25519"
 {{- end}}
 
 # Source additional local files if they exist.
-z4h source ~/.env.zsh
+[[ -f ~/.env.zsh ]] && source ~/.env.zsh
 
-z4h source mafredri/zsh-async/async.zsh
+# History configuration (replaces z4h defaults).
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=100000
+SAVEHIST=100000
+setopt EXTENDED_HISTORY          # Record timestamp in history
+setopt SHARE_HISTORY             # Share history between all sessions
+setopt HIST_EXPIRE_DUPS_FIRST    # Expire duplicate entries first when trimming history
+setopt HIST_IGNORE_DUPS          # Do not record an entry that was just recorded again
+setopt HIST_IGNORE_ALL_DUPS      # Delete old recorded entry if new entry is a duplicate
+setopt HIST_IGNORE_SPACE         # Do not record an entry starting with a space
+setopt HIST_SAVE_NO_DUPS         # Do not write duplicate entries in the history file
 
-# Define key bindings.
-z4h bindkey undo Ctrl+/   Shift+Tab  # undo the last command line change
-z4h bindkey redo Option+/            # redo the last undone command line change
+# Directory navigation & completion shell options.
+setopt AUTO_PUSHD                # Push old directory onto the stack on cd
+setopt PUSHD_IGNORE_DUPS         # Do not store duplicates in the directory stack
+setopt PUSHD_SILENT              # Do not print directory stack after pushd or popd
+setopt GLOB_DOTS                 # Include dotfiles in globbing and completions
+setopt INTERACTIVE_COMMENTS      # Allow comments in interactive shell
 
-z4h bindkey z4h-cd-back    Shift+Left   # cd into the previous directory
-z4h bindkey z4h-cd-forward Shift+Right  # cd into the next directory
-z4h bindkey z4h-cd-up      Shift+Up     # cd into the parent directory
-z4h bindkey z4h-cd-down    Shift+Down   # cd into a child directory
+# Antidote plugin manager setup.
+zstyle ':antidote:bundle' use-friendly-names 'yes'
+ANTIDOTE_HOME="${ANTIDOTE_HOME:-${XDG_CACHE_HOME:-$HOME/Library/Caches}/antidote}"
+if [[ -d "$ANTIDOTE_HOME/zsh-users/zsh-completions/src" ]]; then
+  fpath=("$ANTIDOTE_HOME/zsh-users/zsh-completions/src" $fpath)
+fi
+
+# Initialize completions before loading fzf-tab and syntax/autosuggestion plugins.
+autoload -Uz compinit
+compinit -C
+
+# Load plugins via Antidote.
+if [[ -f "${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh" ]]; then
+  source "${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh"
+  antidote load
+fi
+
+# fzf-tab configuration (replaces :z4h:fzf-complete).
+zstyle ':completion:*:git-checkout:*' sort false
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:*' switch-group '<' '>'
+
+# Enable fzf keybindings (Ctrl+R history, Ctrl+T files, Option+C cd).
+if (( $+commands[fzf] )); then
+  source <(fzf --zsh)
+fi
+
+# Key bindings (Emacs mode, matching previous z4h bindings).
+bindkey -e
+
+# Up/Down arrow prefix history search.
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
+bindkey '^[OA' up-line-or-beginning-search
+bindkey '^[OB' down-line-or-beginning-search
+
+# Undo / Redo.
+bindkey '^_'   undo  # Ctrl+/
+bindkey '^[[Z' undo  # Shift+Tab
+bindkey '^[/'  redo  # Option+/
+
+# Option+Left / Option+Right word navigation (macOS keyboard).
+bindkey '^[[1;3D' backward-word
+bindkey '^[[1;3C' forward-word
+bindkey '^[b'     backward-word
+bindkey '^[f'     forward-word
+
+# Directory navigation widgets (replaces z4h-cd-back/forward/up/down).
+function _redraw_prompt() {
+  local f
+  for f in $precmd_functions; do
+    "$f"
+  done
+  zle reset-prompt
+}
+
+function _cd_back() {
+  pushd -q +1 2>/dev/null && _redraw_prompt
+}
+function _cd_forward() {
+  pushd -q -0 2>/dev/null && _redraw_prompt
+}
+function _cd_up() {
+  cd .. 2>/dev/null && _redraw_prompt
+}
+function _cd_down() {
+  if (( $+commands[fzf] )); then
+    local dir
+    dir=$(command find -L . -mindepth 1 -maxdepth 3 -type d -not -path '*/.*' 2>/dev/null | sed 's|^\./||' | fzf --height 40% --reverse --prompt="cd> ")
+    if [[ -n "$dir" ]]; then
+      cd -- "$dir" && _redraw_prompt
+    else
+      zle reset-prompt
+    fi
+  fi
+}
+zle -N _cd_back
+zle -N _cd_forward
+zle -N _cd_up
+zle -N _cd_down
+
+bindkey '^[[1;2D' _cd_back     # Shift+Left: cd into the previous directory
+bindkey '^[[1;2C' _cd_forward  # Shift+Right: cd into the next directory
+bindkey '^[[1;2A' _cd_up       # Shift+Up: cd into the parent directory
+bindkey '^[[1;2B' _cd_down     # Shift+Down: cd into a child directory
 
 # Autoload functions.
 autoload -Uz zmv
@@ -104,172 +170,11 @@ autoload -Uz zmv
 function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
 compdef _directories md
 
-function jj_status() {
-  emulate -L zsh
-  cd "$1"
-
-
-  local grey='%244F'
-  local green='%2F'
-  local blue='%39F'
-  local red='%196F'
-  local yellow='%3F'
-  local cyan='%6F'
-  local magenta='%5F'
-
-
-  ## jj_add
-  jj --at-operation=@ debug snapshot
-
-
-  ## jj_at
-  local branch=$(jj --ignore-working-copy --at-op=@ --no-pager log --no-graph --limit 1 -r "
-    coalesce(
-      heads(::@ & (bookmarks() | remote_bookmarks() | tags())),
-      heads(@:: & (bookmarks() | remote_bookmarks() | tags())),
-      trunk()
-    )" -T "separate(' ', bookmarks, tags)" 2> /dev/null | cut -d ' ' -f 1)
-  if [[ -n $branch ]]; then
-    [[ $branch =~ "\*$" ]] && branch=${branch::-1}
-
-
-    local VCS_STATUS_COMMITS_AFTER=$(jj --ignore-working-copy --at-op=@ --no-pager log --no-graph -r "$branch..@ & (~empty() | merges())" -T '"n"' 2> /dev/null | wc -c | tr -d ' ')
-    local VCS_STATUS_COMMITS_BEFORE=$(jj --ignore-working-copy --at-op=@ --no-pager log --no-graph -r "@..$branch & (~empty() | merges())" -T '"n"' 2> /dev/null | wc -c | tr -d ' ')
-    local counts=($(jj --ignore-working-copy --at-op=@ --no-pager bookmark list -r $branch -T '
-      if(remote,
-        separate(" ",
-          name ++ "@" ++ remote, 
-          coalesce(tracking_ahead_count.exact(), tracking_ahead_count.lower()),
-          coalesce(tracking_behind_count.exact(), tracking_behind_count.lower()),
-          if(tracking_ahead_count.exact(), "0", "+"),
-          if(tracking_behind_count.exact(), "0", "+"),
-        ) ++ "\n"
-      )
-    '))
-
-
-    local VCS_STATUS_LOCAL_BRANCH=$branch
-    local VCS_STATUS_COMMITS_AHEAD=$counts[2]
-    local VCS_STATUS_COMMITS_BEHIND=$counts[3]
-    local VCS_STATUS_COMMITS_AHEAD_PLUS=$counts[4]
-    local VCS_STATUS_COMMITS_BEHIND_PLUS=$counts[5]
-  fi
-
-
-  local status_color=${green}
-  (( VCS_STATUS_COMMITS_AHEAD )) && status_color=${cyan}
-  (( VCS_STATUS_COMMITS_BEHIND )) && status_color=${magenta}
-  (( VCS_STATUS_COMMITS_AHEAD && VCS_STATUS_COMMITS_BEHIND )) && status_color=${red}
-
-
-  local res
-  local where=${(V)VCS_STATUS_LOCAL_BRANCH}
-  # If local branch name or tag is at most 32 characters long, show it in full.
-  # Otherwise show the first 12 … the last 12.
-  (( $#where > 32 )) && where[13,-13]="…"
-  res+="${status_color}${where//\%/%%}"  # escape %
-
-
-  # ‹42 if before the local bookmark
-  (( VCS_STATUS_COMMITS_BEFORE )) && res+="‹${VCS_STATUS_COMMITS_BEFORE}"
-  # ›42 if beyond the local bookmark
-  (( VCS_STATUS_COMMITS_AFTER )) && res+="›${VCS_STATUS_COMMITS_AFTER}"
-
-
-
-  ## jj_remote
-  # ⇣42 if behind the remote.
-  (( VCS_STATUS_COMMITS_BEHIND )) && res+=" ${green}⇣${VCS_STATUS_COMMITS_BEHIND}"
-  (( VCS_STATUS_COMMITS_BEHIND_PLUS )) && res+="${VCS_STATUS_COMMITS_BEHIND_PLUS}"
-  # ⇡42 if ahead of the remote; no leading space if also behind the remote: ⇣42⇡42.
-  (( VCS_STATUS_COMMITS_AHEAD && !VCS_STATUS_COMMITS_BEHIND )) && res+=" "
-  (( VCS_STATUS_COMMITS_AHEAD  )) && res+="${green}⇡${VCS_STATUS_COMMITS_AHEAD}"
-  (( VCS_STATUS_COMMITS_AHEAD_PLUS )) && res+="${VCS_STATUS_COMMITS_AHEAD_PLUS}"
-
-
-
-  ## jj_change
-  IFS="#" local change=($(jj --ignore-working-copy --at-op=@ --no-pager log --no-graph --limit 1 -r "@" -T '
-    separate("#", change_id.shortest(4).prefix(), coalesce(change_id.shortest(4).rest(), "\0"),
-      commit_id.shortest(4).prefix(),
-      coalesce(commit_id.shortest(4).rest(), "\0"),
-      concat(
-        if(conflict, "💥"),
-        if(divergent, "🚧"),
-        if(hidden, "👻"),
-        if(immutable, "🔒"),
-      ),
-    )'))
-  local VCS_STATUS_CHANGE=($change[1] $change[2])
-  local VCS_STATUS_COMMIT=($change[3] $change[4])
-  local VCS_STATUS_ACTION=$change[5]
-  # 'zyxw' with the standard jj color coding for shortest name
-  res+=" ${magenta}${VCS_STATUS_CHANGE[1]}${grey}${VCS_STATUS_CHANGE[2]}"
-  # '💥🚧👻🔒' if the repo is in an unusual state.
-  [[ -n $VCS_STATUS_ACTION     ]] && res+=" ${red}${VCS_STATUS_ACTION}"
-  # # '123abc' with the standard jj color coding for shortest name
-  # res+=" ${blue}${VCS_STATUS_COMMIT[1]}${grey}${VCS_STATUS_COMMIT[2]}"
-
-
-
-
-  ## jj_desc
-  local VCS_STATUS_MESSAGE=$(jj --ignore-working-copy --at-op=@ --no-pager log --no-graph --limit 1 -r "@" -T "coalesce(description.first_line(), if(!empty, '\Uf040 '))")
-  [[ -n $VCS_STATUS_MESSAGE ]] && res+=" ${green}${VCS_STATUS_MESSAGE}"
-  
-
-
-  ## jj_status
-  local VCS_STATUS_CHANGES=($(jj log --ignore-working-copy --at-op=@ --no-graph --no-pager -r @ -T "diff.summary()" 2> /dev/null | awk 'BEGIN {a=0;d=0;m=0} /^A / {a++} /^D / {d++} /^M / {m++} /^R / {m++} /^C / {a++} END {print(a,d,m)}'))
-  (( VCS_STATUS_CHANGES[1] )) && res+=" %F{green}+${VCS_STATUS_CHANGES[1]}"
-  (( VCS_STATUS_CHANGES[2] )) && res+=" %F{red}-${VCS_STATUS_CHANGES[2]}"
-  (( VCS_STATUS_CHANGES[3] )) && res+=" ${yellow}^${VCS_STATUS_CHANGES[3]}"
-
-
-
-
-  ## jj_op
-  # local VCS_STATUS_MESSAGE=$(jj --ignore-working-copy --at-op=@ --no-pager op log --limit 1 --no-graph -T "id.short()")
-  # [[ -n $VCS_STATUS_MESSAGE ]] && res+=" ${blue}${VCS_STATUS_MESSAGE}"
-
-
-
-
-  # return results
-  echo $res
-}
-function jj_status_callback() {
-  emulate -L zsh
-  if [[ $2 -ne 0 ]]; then
-    typeset -g p10k_jj_status=
-  else
-    typeset -g p10k_jj_status="$3"
-  fi
-  typeset -g p10k_jj_status_stale= p10k_jj_status_updated=1
-  p10k display -r
-}
-async_start_worker        jj_status_worker -u
-async_unregister_callback jj_status_worker
-async_register_callback   jj_status_worker jj_status_callback
-function prompt_jj() {
-  emulate -L zsh -o extended_glob
-  (( $+commands[jj]         )) || return
-  [[ -n ./(../)#(.jj)(#qN/) ]] || return
-  typeset -g p10k_jj_status_stale=1 p10k_jj_status_updated=
-  p10k segment -f grey -c '$p10k_jj_status_stale' -e -t '$p10k_jj_status'
-  p10k segment -c '$p10k_jj_status_updated' -e -t '$p10k_jj_status'
-  async_job jj_status_worker jj_status $PWD
-}
-
-# Define named directories: ~w <=> Windows home directory on WSL.
-[[ -z $z4h_win_home ]] || hash -d w=$z4h_win_home
-
 # Define aliases.
 alias tree='tree -a -I .git'
-
-# Add flags to existing aliases.
 alias ls="${aliases[ls]:-ls} -A"
 
-# Set shell options: http://zsh.sourceforge.net/Doc/Release/Options.html.
-setopt glob_dots     # no special treatment for file names with a leading dot
-setopt no_auto_menu  # require an extra TAB press to open the completion menu
+# Initialize Starship prompt.
+if (( $+commands[starship] )); then
+  eval "$(starship init zsh)"
+fi

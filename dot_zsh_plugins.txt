@@ -1,0 +1,9 @@
+# Extra completion definitions
+zsh-users/zsh-completions kind:fpath path:src
+
+# Replace zsh's default completion selection menu with fzf (replaces :z4h:fzf-complete)
+Aloxaf/fzf-tab
+
+# Fish-like autosuggestions & fast syntax highlighting
+zsh-users/zsh-autosuggestions
+zdharma-continuum/fast-syntax-highlighting
